@@ -1,0 +1,30 @@
+# Base image: OSRF's ROS Jazzy "desktop" variant (Ubuntu 24.04 + ROS2 + RViz).
+FROM osrf/ros:jazzy-desktop
+
+# Avoid interactive prompts during apt installs.
+ARG DEBIAN_FRONTEND=noninteractive
+
+# One apt layer: update + install + clean, so the image doesn't keep apt's cache.
+# ros-jazzy-moveit            -> MoveIt2 (planning, move_group, RViz plugin)
+# ros-jazzy-ur                -> UR description, ros2_control driver, MoveIt config
+# ros-jazzy-ros2-control(ler) -> controller manager + joint_trajectory_controller
+# cv-bridge / image-transport -> convert sensor_msgs/Image <-> cv::Mat
+# tf2-*                       -> coordinate-frame lookups and transforms
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-jazzy-moveit \
+    ros-jazzy-ur \
+    ros-jazzy-ros2-control ros-jazzy-ros2-controllers \
+    ros-jazzy-cv-bridge ros-jazzy-image-transport \
+    ros-jazzy-tf2-ros ros-jazzy-tf2-geometry-msgs \
+    python3-colcon-common-extensions python3-opencv \
+    gdb clang-format git \
+ && rm -rf /var/lib/apt/lists/*
+
+# Run as a non-root user with UID 1000 (WSL's default), so files created in the
+# mounted workspace are owned by you, not root.
+RUN id -u ubuntu >/dev/null 2>&1 || useradd -m -u 1000 -s /bin/bash ubuntu
+USER ubuntu
+WORKDIR /home/ubuntu/ws
+
+# Every new shell gets the ROS environment (PATH, AMENT_PREFIX_PATH, ...).
+RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/ubuntu/.bashrc
