@@ -27,7 +27,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(planner_client src/planner_client.cpp)
+add_executable(planner_client src/grasp.cpp)
 ament_target_dependencies(planner_client rclcpp moveit_ros_planning_interface
   geometry_msgs moveit_msgs shape_msgs tf2 tf2_geometry_msgs)
 
