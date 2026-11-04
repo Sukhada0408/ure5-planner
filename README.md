@@ -54,9 +54,10 @@ Build (once, from each workspace root):
 ```bash
 colcon build --parallel-workers 2 --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
-```
 
-# 1. Terminal 1: robot (mock hardware) and MoveIt
+Then in different terminals, run the following commands.
+
+# Terminal 1: robot (mock hardware) and MoveIt
 ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=yyy.yyy.yyy.yyy use_mock_hardware:=true launch_rviz:=false
 # 2. Terminal 2:
 ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
