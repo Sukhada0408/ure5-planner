@@ -1,6 +1,8 @@
 # Vision-Guided Grasping with UR5e and MoveIt2
 
-A UR5e arm (mock hardware) moves to a pre-grasp pose above a coloured cube. The cube is located by a synthetic top-down camera and an OpenCV detector. The whole pipeline runs in Docker, on CPU only, with no physical robot.
+A UR5e arm (mock hardware) moves to a pre-grasp pose above a coloured cube. The cube is located by a synthetic top-down camera and an OpenCV detector. The synthetic camera for rendering the cube and the detector are defined in a separate repo (cube_perception). The whole pipeline runs in Docker, on CPU only, with no physical robot.
+
+This repo works in combination with the [cube_perception repo](https://github.com/Sukhada0408/cube_perception)
 
 ## Goal
 
@@ -58,7 +60,7 @@ source install/setup.bash
 ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=yyy.yyy.yyy.yyy use_mock_hardware:=true launch_rviz:=false
 # 2. Terminal 2:
 ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
-# 3. Terminal 3 (source the perception workspace): camera and detector
+# 3. Terminal 3 (source the perception workspace): camera and detector. Check the [cube_perception repo](https://github.com/Sukhada0408/cube_perception) for this
 ros2 launch cube_perception perception.launch.py
 # 4. Terminal 4 (source the planner workspace): grasp client
 ros2 launch ur_planner_client planner_client.launch.py
