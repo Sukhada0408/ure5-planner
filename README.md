@@ -61,10 +61,11 @@ Then in different terminals, run the following commands.
 ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=yyy.yyy.yyy.yyy use_mock_hardware:=true launch_rviz:=false
 # 2. Terminal 2:
 ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
-# 3. Terminal 3 (source the perception workspace): camera and detector. Check the [cube_perception repo](https://github.com/Sukhada0408/cube_perception) for this
-ros2 launch cube_perception perception.launch.py
-# 4. Terminal 4 (source the planner workspace): grasp client
+# 3. Terminal 4 (source the planner workspace): grasp client
 ros2 launch ur_planner_client planner_client.launch.py
+# 4. Terminal 3 (source the perception workspace): camera and detector. Check the [cube_perception repo](https://github.com/Sukhada0408/cube_perception) for this
+ros2 launch cube_perception perception.launch.py
+
 ```
 
 In a params.yaml file, set the 'cube_x' and 'cube_y' parameters. Load the file (ros2 param load /synthetic_camera params.yaml) and watch the arm move to the grasp position.
