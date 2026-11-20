@@ -10,7 +10,7 @@ Close the loop between perception and motion planning:
 
 1. A synthetic camera renders a cube on a table.
 2. A detector estimates the cube pose in `base_link`.
-3. A C++ MoveIt2 client plans and executes a motion to a pose 15 cm above the cube, with the tool pointing down.
+3. A C++ MoveIt2 client plans and executes a motion to a pose 15 cm above the cube, a virtual gripper then picks up the cube.
 
 ## Architecture
 
