@@ -71,6 +71,10 @@ ros2 launch ur_planner_client planner_client.launch.py
 
 In a params.yaml file, set the 'cube_x' and 'cube_y' parameters. Load the file (ros2 param load /synthetic_camera params.yaml) and watch the arm move to the grasp position.
 
+## Demo
+
+https://github.com/user-attachments/assets/1299ac39-ab08-44db-964f-df22449acde5
+
 
 ## How the grasp client works
 
