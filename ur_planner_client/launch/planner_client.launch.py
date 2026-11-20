@@ -32,4 +32,9 @@ def generate_launch_description():
             {"target_x": -0.707, "target_y": 0.001, "target_z": 0.001, "target_yaw": 0.707},
             {"low_x": 0.1, "low_y": 0.1, "low_z": -0.4, "low_yaw": 0.7},
             {"home_x": -0.5, "home_y": 0.5, "home_z": 0.5, "home_yaw": 0.5},
+            {"cube_size": 0.05},
+            {"pose_is_top_face": True},
+            {"pre_grasp_height": 0.15},
+            {"grasp_clearance": 0.02},
+            {"touch_links": ["tool0", "wrist_3_link", "flange"]},
         ])])
