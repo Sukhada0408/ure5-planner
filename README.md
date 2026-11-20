@@ -1,6 +1,6 @@
 # Vision-Guided Grasping with UR5e and MoveIt2
 
-A UR5e arm (mock hardware) moves to a pre-grasp pose above a coloured cube. The cube is located by a synthetic top-down camera and an OpenCV detector. The synthetic camera for rendering the cube and the detector are defined in a separate repo (cube_perception). The whole pipeline runs in Docker, on CPU only, with no physical robot.
+A UR5e arm (mock hardware) picks up a coloured cube located by a synthetic top-down camera and an OpenCV detector. The synthetic camera for rendering the cube and the detector are defined in a separate repo (cube_perception). The whole pipeline runs in Docker, on CPU only, with no physical robot.
 
 This repo works in combination with the [cube_perception repo](https://github.com/Sukhada0408/cube_perception)
 
@@ -10,7 +10,7 @@ Close the loop between perception and motion planning:
 
 1. A synthetic camera renders a cube on a table.
 2. A detector estimates the cube pose in `base_link`.
-3. A C++ MoveIt2 client plans and executes a motion to a pose 15 cm above the cube, a virtual gripper then picks up the cube.
+3. A C++ MoveIt2 client plans and executes a motion to a pose 15 cm above the cube, descends in a straight line, and grasps it.
 
 ## Architecture
 
@@ -21,8 +21,9 @@ Close the loop between perception and motion planning:
  static TF base_link -> camera_link                    │
                                                        ▼ /object_pose (PoseStamped, base_link)
                                              grasp client (C++)
-                                  trigger policy -> pre-grasp pose (+15 cm, tool down)
-                                  -> MoveGroupInterface plan() -> execute()
+                                  trigger policy -> cube added to planning scene
+                                  -> plan() to pre-grasp pose -> Cartesian descent
+                                  -> attach cube (virtual gripper) -> Cartesian lift
                                                        │
                                                        ▼
                                MoveIt2 move_group  ──►  UR5e mock hardware controllers
@@ -61,10 +62,10 @@ Then in different terminals, run the following commands.
 ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5e robot_ip:=yyy.yyy.yyy.yyy use_mock_hardware:=true launch_rviz:=false
 # 2. Terminal 2:
 ros2 launch ur_moveit_config ur_moveit.launch.py ur_type:=ur5e launch_rviz:=true
-# 3. Terminal 4 (source the planner workspace): grasp client
-ros2 launch ur_planner_client planner_client.launch.py
-# 4. Terminal 3 (source the perception workspace): camera and detector. Check the [cube_perception repo](https://github.com/Sukhada0408/cube_perception) for this
+# 3. Terminal 3 (source the perception workspace): camera and detector. Check the [cube_perception repo](https://github.com/Sukhada0408/cube_perception) for this
 ros2 launch cube_perception perception.launch.py
+# 4. Terminal 4 (source the planner workspace): grasp client
+ros2 launch ur_planner_client planner_client.launch.py
 
 ```
 
@@ -77,6 +78,9 @@ In a params.yaml file, set the 'cube_x' and 'cube_y' parameters. Load the file (
 - **Pre-grasp pose:** x, y from the detection, z raised by `[0.15 m]`, orientation fixed to a 180° rotation about x so the tool z-axis points down.
 - **Frame guard:** targets not expressed in `base_link` are rejected with an error instead of silently sent to the wrong place.
 - **Error handling:** the error code of both `plan()` and `execute()` is checked and logged.
+- **Planning scene:** each detection is added to the planning scene as a box (`cube_size`), so MoveIt plans around it and RViz shows a 3D cube.
+- **Pick sequence:** `plan()` to the pre-grasp pose, then a Cartesian straight-line descent, then grasp, then a Cartesian lift. A Cartesian path is accepted only if at least 95 % of it is achievable.
+- **Virtual gripper:** at the grasp pose the cube is attached to `tool0` (`attachObject`), so it moves with the arm. `touch_links` lists the links allowed to touch it.
 
 
 ## What I learned and debugged
