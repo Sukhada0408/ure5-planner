@@ -80,6 +80,6 @@ In a params.yaml file, set the 'cube_x' and 'cube_y' parameters. Load the file (
 
 ## What I learned and debugged
 
-- `To set the target pose for planning and execution. The arguments passed to the functions and logging the subsequent errors.
+- To set the target pose for planning and execution. The arguments passed to the functions and logging the subsequent errors.
 
-- `Loading two workspaces in a docker container. One workspace for cube_perception and one for planner_client.`
+- Loading two workspaces in a docker container. One workspace for cube_perception and one for planner_client.
